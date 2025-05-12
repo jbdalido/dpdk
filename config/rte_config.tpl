@@ -134,6 +134,7 @@
 #define RTE_LIB_KVARGS 1
 #define RTE_LIB_LATENCYSTATS 1
 #define RTE_LIB_LOG 1
+#define RTE_HAS_INT128 1
 #define RTE_LIB_LPM 1
 #define RTE_LIB_MBUF 1
 #define RTE_LIB_MEMBER 1

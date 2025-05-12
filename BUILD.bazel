@@ -13,22 +13,18 @@ cc_library(
             "**/*_neon.c",
             "**/*_neon.h",
             "**/*_altivec.c",
-
-            "drivers/net/virtio/virtio_rxtx_simple_sse.c",
-            "drivers/net/virtio/virtio_rxtx_simple_altivec.c",
-            "drivers/net/virtio/virtio_rxtx_packed_neon.h",
+            "drivers/net/virtio/virtio_rxtx_simple.c",
+            # "drivers/net/virtio/virtio_rxtx_simple_sse.c",
             "drivers/net/virtio/virtio_rxtx_packed.c",
-
             "drivers/net/mlx5/mlx5_rxtx_vec_null.c",
             "drivers/net/mlx5/mlx5_flow_hw_stubs.c",
             "drivers/common/mlx5/windows/**",
             "drivers/net/mlx5/windows/**",
-
             "drivers/event/dlb2/dlb2_sse.c",
-            "drivers/event/dlb2/dlb2_avx512.c",
+            "drivers/net/enic/enic_main.c",
+            "drivers/net/nfp/nfdk/nfp_nfdk_vec_stub.c",
+            "drivers/net/nfp/nfp_rxtx_vec_stub.c",
 
-            "drivers/net/enic/**",
-            "drivers/net/nfp/**",
             "drivers/net/mvneta/**",
             "drivers/net/mvpp2/**",
             "drivers/net/sfc/**",
@@ -40,22 +36,7 @@ cc_library(
             "drivers/net/hns3/**",
             "drivers/net/intel/ice/**",
             "drivers/net/intel/cpfl/**",
-            "drivers/net/intel/i40e/i40e_rxtx_vec_altivec.c",
             "drivers/net/pcap/**",
-
-            # AF_XDP FUCK FUCK FUCK, you're next on the list
-            # "drivers/net/af_xdp/**",
-
-            "drivers/net/bnxt/bnxt_rxtx_vec_neon.c",
-            "drivers/net/hns3/hns3_rxtx_vec_neon.h",
-            "drivers/net/mlx5/mlx5_rxtx_vec_neon.h",
-            "drivers/net/ngbe/ngbe_rxtx_vec_neon.c",
-            "drivers/net/intel/iavf/iavf_rxtx_vec_neon.c",
-            "drivers/net/intel/i40e/i40e_rxtx_vec_neon.c",
-            "drivers/net/intel/ixgbe/ixgbe_rxtx_vec_neon.c",
-            "drivers/net/txgbe/txgbe_rxtx_vec_neon.c",
-            "drivers/net/octeon_ep/cnxk_ep_rx_neon.c",
-
             "drivers/raw/ifpga/**",
             "drivers/ml/**",
             "drivers/compress/isal/**",
@@ -66,7 +47,6 @@ cc_library(
             "drivers/crypto/armv8/**",
             "drivers/power/amd_uncore/**",
             "drivers/gpu/cuda/**",
-
             "drivers/common/dpaax/dpaax_logs.h",
             "drivers/common/mvep/**",
             "drivers/bus/**",
@@ -74,25 +54,16 @@ cc_library(
             "drivers/bus/pci/bsd/pci.c",
             "drivers/bus/pci/windows/**",
             "drivers/net/pcap/pcap_osdep_windows.c",
-
             "lib/distributor/rte_distributor_match_generic.c",
             "lib/eal/linux/vduse.h", # vduse.h is not used in the build
             "lib/vhost/vduse.c",
-            "lib/bpf/bpf_convert.c", # libpcap is missing
-            "lib/bpf/bpf_load_elf.c", # libelf is missing
-            "lib/acl/acl_run_sse.c",  # x86 specific
+            "lib/bpf/bpf_stub.c",
+            "lib/acl/rte_acl.c",
             "lib/acl/acl_run_altivec.c",  # PPC specific
-            "lib/acl/acl_run_altivec.h",  # x86 specific
-            "lib/acl/acl_run_avx2.c", # x86 AVX2 specific
+            # "lib/acl/acl_run_altivec.h",  # x86 specific
             "lib/acl/acl_run_neon.c", # ARM specific
             "lib/acl_run_altivec.c",  # PPC_64 specific
             "lib/acl/acl_run_neon.h", # ARM specific
-            "lib/acl/acl_run_avx512.c", # x86 AVX512-specific
-            "lib/acl/acl_run_avx512x16.h", # x86 AVX512-specific
-            "lib/member/rte_member_sketch_avx512.c", # x86 AVX512-specific
-            "lib/member/rte_member_sketch_avx512.h", # x86 AVX512-specific
-            "lib/member/rte_member_sketch_avx2.c", # x86 AVX2-specific
-            "lib/member/rte_member_sketch_avx2.h", # x86 AVX2-specific
             "lib/mldev/mldev_utils_neon.c", # ARM specific
             "lib/mldev/mldev_utils_neon.h", # ARM specific
             "lib/mldev/mldev_utils_neon_bfloat16.c", # ARM specific
@@ -101,8 +72,6 @@ cc_library(
             "lib/net/crc_neon.h", # ARM specific
             "lib/net/net_crc_neon.c", # ARM specific
             "lib/net/net_crc_neon.h", # ARM specific
-            "lib/net/net_crc_avx512.c", # x86 AVX512-specific
-            "lib/net/net_crc_avx512.h", # x86 AVX512-specific
             "lib/eal/arm/**",
             "lib/eal/windows/**",
             "drivers/bus/fslmc/qbman/qbman_debug.c",
@@ -119,9 +88,10 @@ cc_library(
         "app/test-pmd/**/*.h",
     ]),
     deps = [
-        # "//:lib",
         "//config",
         "@com_github_rdma//:mlx5dv",
+        "@com_github_libelf//:libelf",
+        "@com_github_libpcap//:libpcap",
         "@com_github_libbpf//:libbpf",
         "@com_github_libbpf//:libbpf_path",
         "@com_github_libxdp//:libxdp",
@@ -321,6 +291,7 @@ cc_library(
         "drivers/dma/dpaa",
         "drivers/dma/cnxk",
         "drivers/dma/ioat",
+        "drivers/ml/cnxk",
         "drivers/mempool",
         "drivers/mempool/ring",
         "drivers/mempool/octeontx",
@@ -331,7 +302,7 @@ cc_library(
         "drivers/mempool/cnxk",
         "drivers/gpu",
         "drivers/gpu/cuda",
-
+        # libs
         "lib/eal/common",
         "lib/eal/include",
         "lib/eal/linux/include",
@@ -401,14 +372,16 @@ cc_library(
         "-mrtm",
         "-D_GNU_SOURCE",
         "-DRTE_EXEC_ENV_LINUX",
-        "-mavx512f", "-mavx512dq", "-mavx512bw", "-msse4.2",
-        '-std=c11',
+        "-mavx512f", "-mavx512dq", "-mavx512bw", "-mavx512vl", "-mavx512ifma",
+        "-mavx512er", "-mavx512cd", "-mavx2", "-mavx", "-msse4.2", "-msse4.1",
+        "-mvpclmulqdq",
         "-mpclmul",
-        '-Wno-strict-prototypes',
-        '-D_BSD_SOURCE',
-        '-D_DEFAULT_SOURCE',
-        '-D_XOPEN_SOURCE=600',
         "-mcrc32",
+        "-std=c11",
+        "-Wno-strict-prototypes",
+        "-D_BSD_SOURCE",
+        "-D_DEFAULT_SOURCE",
+        "-D_XOPEN_SOURCE=600",
         "-Wvisibility",
         "-Wno-address-of-packed-member",
         "-Wno-#pragma-messages",

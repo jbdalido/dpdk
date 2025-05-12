@@ -9,6 +9,7 @@ bazel_dep(name = "platforms", version = "0.0.11")
 bazel_dep(name = "hermetic_cc_toolchain", version = "3.2.0")
 bazel_dep(name = "rules_distroless", version = "0.5.1")
 bazel_dep(name = "openssl", version = "3.3.1.bcr.1")
+bazel_dep(name = "libarchive", version = "3.7.9")
 
 toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
 use_repo(toolchains, "zig_sdk")
@@ -89,6 +90,30 @@ http_archive(
     strip_prefix = "libbpf-0.8.1",
     sha256 = "7bda8187efc619d1eb20a1ba5ab949dd68d40dd44945310c91ac0f915fa4a42b",
     urls = ["https://github.com/libbpf/libbpf/archive/refs/tags/v0.8.1.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_libelf",
+    build_file = "//:third_party/libelf/BUILD.bazel.in",
+    strip_prefix = "elfutils-0b72b650b173fdf5467b337ff26e97e69daed869",
+    sha256 = "3a58857d1874cb73e3d067f21ab61c8b1eb764a139aaa87313e3ad60716b16c1",
+    urls = ["https://github.com/kushaldas/elfutils/archive/0b72b650b173fdf5467b337ff26e97e69daed869.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_libpcap",
+    build_file = "//:third_party/libpcap/BUILD.bazel.in",
+    strip_prefix = "libpcap-3f634fd7856532cd7be8a77c84d9f21c1d5282cc",
+    sha256 = "9325dccce42bc768b2e3a0743add6823300e68fbf1bcb3a10c503c1a51bc775a",
+    urls = ["https://github.com/the-tcpdump-group/libpcap/archive/3f634fd7856532cd7be8a77c84d9f21c1d5282cc.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_dlpack",
+    build_file = "//:third_party/dlpack/BUILD.bazel.in",
+    strip_prefix = "dlpack-1.1",
+    sha256 = "2e3b94b55825c240cc58e6721e15b449978cbae21a2a4caa23058b0157ee2fb3",
+    urls = ["https://github.com/dmlc/dlpack/archive/refs/tags/v1.1.tar.gz"],
 )
 
 
