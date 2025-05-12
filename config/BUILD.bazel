@@ -1,0 +1,40 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//config:rte_config.bzl", "generate_build_config")
+
+# Generate the rte_build_config.h file
+generate_build_config(
+    name = "generate_build_config",
+    template = "rte_config.tpl",
+    out = "rte_build_config.h",
+    is_linux = True,
+    arch = "x86_64",
+    arch_64 = True,
+    
+    # Common DPDK settings
+    max_ethports = "32",
+    pkt_mbuf_headroom = "128",
+    
+    # Version from your project
+    ver_year = "23", 
+    ver_month = "11",
+    ver_minor = "0",
+    use_libbsd = False,
+)
+
+cc_library(
+    name = "config",
+    defines = [
+        "ALLOW_EXPERIMENTAL_API",
+        "ALLOW_INTERNAL_API",
+        "_GNU_SOURCE",
+        "ABI_VERSION=\\\"23.07\\\"",
+        "RTE_ARCH_X86=1",
+        "TAP_MAX_QUEUES=64",
+    ],
+    hdrs = [
+        "rte_config.h",
+        ":generate_build_config",  # Include the generated header
+    ],
+    includes = ["."],
+    visibility = ["//visibility:public"],
+)

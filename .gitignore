@@ -5,7 +5,8 @@
 !.github/
 !.gitignore*
 !.mailmap*
-
+# Bazel symlinks
+bazel-*
 # ignore generated documentation tables
 doc/guides/nics/overview_table.txt
 doc/guides/nics/rte_flow_actions_table.txt

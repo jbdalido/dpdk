@@ -1,0 +1,94 @@
+module(
+    name = "dpdk",
+)
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+bazel_dep(name = "rules_cc", version = "0.1.1")
+bazel_dep(name = "platforms", version = "0.0.11")
+bazel_dep(name = "hermetic_cc_toolchain", version = "3.2.0")
+bazel_dep(name = "rules_distroless", version = "0.5.1")
+bazel_dep(name = "openssl", version = "3.3.1.bcr.1")
+
+toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+use_repo(toolchains, "zig_sdk")
+
+register_toolchains(
+    "@zig_sdk//toolchain/...",
+    "@zig_sdk//libc_aware/toolchain/...",
+)
+
+apt = use_extension("@rules_distroless//apt:extensions.bzl", "apt")
+apt.install(
+    name = "ubuntu",
+    manifest = "//ubuntu:packages.yaml",
+)
+use_repo(apt, "ubuntu")
+
+
+http_archive(
+    name = "com_github_rdma",
+    build_file = "//:third_party/rdma-core/BUILD.bazel.in",
+    sha256 = "b4ee5100b4e1bc5d4491df6a8ac033d8608ee8a30204c5b54ee7674336a09e8a",
+    strip_prefix = "rdma-core-57.0",
+    urls = ["https://github.com/linux-rdma/rdma-core/archive/refs/tags/v57.0.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_linux",
+    build_file = "//:third_party/linux/BUILD.bazel.in",
+    strip_prefix = "linux-6.14",
+    sha256 = "7d7960d6ce277743e96dbd8d94fce93f13799a69bd9a3e9841eebffde4abe6c2",
+    urls = ["https://github.com/torvalds/linux/archive/refs/tags/v6.14.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_musdk-marvell",
+    build_file = "//:third_party/marvell/BUILD.bazel.in",
+    strip_prefix = "musdk-marvell-146c958ae09d92a225c3d1d4829d3808f4bcfa13",
+    sha256 = "29a252f1e1a8ecca789f2785f4d5e700a29e9b84031817b905d516e5cb2c8ea4",
+    urls = ["https://github.com/MarvellEmbeddedProcessors/musdk-marvell/archive/146c958ae09d92a225c3d1d4829d3808f4bcfa13.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_zlib",
+    build_file = "//:third_party/zlib/BUILD.bazel.in",
+    strip_prefix = "zlib-1.3.1",
+    sha256 = "17e88863f3600672ab49182f217281b6fc4d3c762bde361935e436a95214d05c",
+    urls = ["https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_uadk",
+    build_file = "//:third_party/uadk/BUILD.bazel.in",
+    strip_prefix = "uadk-2.8",
+    sha256 = "77f7f2476067b1f102a1383f291451327772b9c6aad3ed96d79334756d90d59f",
+    urls = ["https://github.com/Linaro/uadk/archive/refs/tags/v2.8.tar.gz"],
+)
+
+
+http_archive(
+    name = "com_github_numactl",
+    build_file = "//:third_party/numactl/BUILD.bazel.in",
+    strip_prefix = "numactl-2.0.19",
+    sha256 = "8b84ffdebfa0d730fb2fc71bb7ec96bb2d38bf76fb67246fde416a68e04125e4",
+    urls = ["https://github.com/numactl/numactl/archive/refs/tags/v2.0.19.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_libxdp",
+    build_file = "//:third_party/libxdp/BUILD.bazel.in",
+    strip_prefix = "xdp-tools-1.2.10",
+    sha256 = "458b99cdec7b54cfebe7640496ecc87746a1342e7459adcffc57fcce963eaf76",
+    urls = ["https://github.com/xdp-project/xdp-tools/archive/refs/tags/v1.2.10.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_libbpf",
+    build_file = "//:third_party/libbpf/BUILD.bazel.in",
+    strip_prefix = "libbpf-1.5.0",
+    sha256 = "53492aff6dd47e4da04ef5e672d753b9743848bdb38e9d90eafbe190b7983c44",
+    urls = ["https://github.com/libbpf/libbpf/archive/refs/tags/v1.5.0.tar.gz"],
+)
+
+
