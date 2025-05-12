@@ -6,6 +6,8 @@ cc_library(
         include = [
             "drivers/**/*.c",
             "drivers/**/*.h",
+            "lib/**/*.c", 
+            "lib/**/*.h",
         ],
         exclude = [
             "**/*_neon.c",
@@ -72,13 +74,52 @@ cc_library(
             "drivers/bus/pci/bsd/pci.c",
             "drivers/bus/pci/windows/**",
             "drivers/net/pcap/pcap_osdep_windows.c",
+
+            "lib/distributor/rte_distributor_match_generic.c",
+            "lib/eal/linux/vduse.h", # vduse.h is not used in the build
+            "lib/vhost/vduse.c",
+            "lib/bpf/bpf_convert.c", # libpcap is missing
+            "lib/bpf/bpf_load_elf.c", # libelf is missing
+            "lib/acl/acl_run_sse.c",  # x86 specific
+            "lib/acl/acl_run_altivec.c",  # PPC specific
+            "lib/acl/acl_run_altivec.h",  # x86 specific
+            "lib/acl/acl_run_avx2.c", # x86 AVX2 specific
+            "lib/acl/acl_run_neon.c", # ARM specific
+            "lib/acl_run_altivec.c",  # PPC_64 specific
+            "lib/acl/acl_run_neon.h", # ARM specific
+            "lib/acl/acl_run_avx512.c", # x86 AVX512-specific
+            "lib/acl/acl_run_avx512x16.h", # x86 AVX512-specific
+            "lib/member/rte_member_sketch_avx512.c", # x86 AVX512-specific
+            "lib/member/rte_member_sketch_avx512.h", # x86 AVX512-specific
+            "lib/member/rte_member_sketch_avx2.c", # x86 AVX2-specific
+            "lib/member/rte_member_sketch_avx2.h", # x86 AVX2-specific
+            "lib/mldev/mldev_utils_neon.c", # ARM specific
+            "lib/mldev/mldev_utils_neon.h", # ARM specific
+            "lib/mldev/mldev_utils_neon_bfloat16.c", # ARM specific
+            "lib/mldev/mldev_utils_neon_bfloat16.h", # ARM specific
+            "lib/net/crc_neon.c", # ARM specific
+            "lib/net/crc_neon.h", # ARM specific
+            "lib/net/net_crc_neon.c", # ARM specific
+            "lib/net/net_crc_neon.h", # ARM specific
+            "lib/net/net_crc_avx512.c", # x86 AVX512-specific
+            "lib/net/net_crc_avx512.h", # x86 AVX512-specific
+            "lib/eal/arm/**",
+            "lib/eal/windows/**",
+            "drivers/bus/fslmc/qbman/qbman_debug.c",
+            "lib/eal/freebsd/**",
+            "lib/eal/loongarch/**",
+            "lib/eal/ppc/**",
+            "lib/eal/riscv/**",
+            "lib/cmdline/cmdline_os_windows.c",
         ]
     ),
     hdrs = glob([
         "drivers/**/*.h",
+        "lib/**/*.h",
+        "app/test-pmd/**/*.h",
     ]),
     deps = [
-        "//:lib",
+        # "//:lib",
         "//config",
         "@com_github_rdma//:mlx5dv",
         "@com_github_libbpf//:libbpf",
@@ -89,10 +130,10 @@ cc_library(
         "@com_github_numactl//:numactl",
     ],
     includes = [
+        "app/test-pmd",
         "drivers/net/intel/ixgbe",
         "drivers/raw/ifpga",
         "drivers/net/intel/i40e/",
-        "app/test-pmd",
         "drivers/net/bnxt/hcapi/cfa_v3/tim/include",
         "drivers/net",
         "drivers/net/tap",
@@ -290,90 +331,7 @@ cc_library(
         "drivers/mempool/cnxk",
         "drivers/gpu",
         "drivers/gpu/cuda",
-    ],
-    visibility = ["//visibility:public"],
-    copts = [
-        "-mrtm",
-        "-D_GNU_SOURCE",
-        "-DRTE_EXEC_ENV_LINUX",
-        "-mavx512f", "-mavx512dq", "-mavx512bw", "-msse4.2",
-        '-std=c11',
-        "-mpclmul",
-        '-Wno-strict-prototypes',
-        '-D_BSD_SOURCE',
-        '-D_DEFAULT_SOURCE',
-        '-D_XOPEN_SOURCE=600',
-        "-mcrc32",
-        "-Wvisibility",
-        "-Wno-address-of-packed-member",
-        "-Wno-#pragma-messages",
-    ],
-)
 
-cc_library(
-    name = "lib",
-    srcs = glob(
-        include = [
-            "lib/**/*.c", 
-            "lib/**/*.h",
-        ],
-        exclude = [
-            "lib/distributor/rte_distributor_match_generic.c",
-            "lib/eal/linux/vduse.h", # vduse.h is not used in the build
-            "lib/vhost/vduse.c",
-            "lib/bpf/bpf_convert.c", # libpcap is missing
-            "lib/bpf/bpf_load_elf.c", # libelf is missing
-            "lib/acl/acl_run_sse.c",  # x86 specific
-            "lib/acl/acl_run_altivec.c",  # PPC specific
-            "lib/acl/acl_run_altivec.h",  # x86 specific
-            "lib/acl/acl_run_avx2.c", # x86 AVX2 specific
-            "lib/acl/acl_run_neon.c", # ARM specific
-            "lib/acl_run_altivec.c",  # PPC_64 specific
-            "lib/acl/acl_run_neon.h", # ARM specific
-            "lib/acl/acl_run_avx512.c", # x86 AVX512-specific
-            "lib/acl/acl_run_avx512x16.h", # x86 AVX512-specific
-            "lib/member/rte_member_sketch_avx512.c", # x86 AVX512-specific
-            "lib/member/rte_member_sketch_avx512.h", # x86 AVX512-specific
-            "lib/member/rte_member_sketch_avx2.c", # x86 AVX2-specific
-            "lib/member/rte_member_sketch_avx2.h", # x86 AVX2-specific
-            "lib/mldev/mldev_utils_neon.c", # ARM specific
-            "lib/mldev/mldev_utils_neon.h", # ARM specific
-            "lib/mldev/mldev_utils_neon_bfloat16.c", # ARM specific
-            "lib/mldev/mldev_utils_neon_bfloat16.h", # ARM specific
-            "lib/net/crc_neon.c", # ARM specific
-            "lib/net/crc_neon.h", # ARM specific
-            "lib/net/net_crc_neon.c", # ARM specific
-            "lib/net/net_crc_neon.h", # ARM specific
-            "lib/net/net_crc_avx512.c", # x86 AVX512-specific
-            "lib/net/net_crc_avx512.h", # x86 AVX512-specific
-            "lib/eal/arm/**",
-            "lib/eal/windows/**",
-             "drivers/bus/fslmc/qbman/qbman_debug.c",
-            "lib/eal/freebsd/**",
-            "lib/eal/loongarch/**",
-            "lib/eal/ppc/**",
-            "lib/eal/riscv/**",
-            "lib/cmdline/cmdline_os_windows.c",
-        ],
-    ),
-    hdrs =  glob([
-        "**/*.h",
-    ]),
-    copts = [
-        "-mrtm",
-        "-D_GNU_SOURCE",
-        "-mavx512f", "-mavx512dq", "-mavx512bw", "-msse4.2",
-        '-std=c11',
-        "-mpclmul",
-        '-Wno-strict-prototypes',
-        '-D_BSD_SOURCE',
-        '-D_DEFAULT_SOURCE',
-        '-D_XOPEN_SOURCE=600',
-        "-mcrc32",
-        "-Wno-address-of-packed-member",
-        "-Wno-#pragma-messages",
-    ],
-    includes = [
         "lib/eal/common",
         "lib/eal/include",
         "lib/eal/linux/include",
@@ -437,9 +395,22 @@ cc_library(
         "lib/graph",
         "lib/node",
     ],
-    deps = [
-        "//config",
-        
-    ],
     visibility = ["//visibility:public"],
+    alwayslink = 1,
+    copts = [
+        "-mrtm",
+        "-D_GNU_SOURCE",
+        "-DRTE_EXEC_ENV_LINUX",
+        "-mavx512f", "-mavx512dq", "-mavx512bw", "-msse4.2",
+        '-std=c11',
+        "-mpclmul",
+        '-Wno-strict-prototypes',
+        '-D_BSD_SOURCE',
+        '-D_DEFAULT_SOURCE',
+        '-D_XOPEN_SOURCE=600',
+        "-mcrc32",
+        "-Wvisibility",
+        "-Wno-address-of-packed-member",
+        "-Wno-#pragma-messages",
+    ],
 )
