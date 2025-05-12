@@ -42,7 +42,7 @@ cc_library(
             "drivers/net/pcap/**",
 
             # AF_XDP FUCK FUCK FUCK, you're next on the list
-            "drivers/net/af_xdp/**",
+            # "drivers/net/af_xdp/**",
 
             "drivers/net/bnxt/bnxt_rxtx_vec_neon.c",
             "drivers/net/hns3/hns3_rxtx_vec_neon.h",
